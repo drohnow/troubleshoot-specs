@@ -4,11 +4,6 @@ metadata:
   name: default
 spec:
   collectors:
-    - logs:
-        collectorName: kotsadm-api
-        name: kots/admin_console
-        selector:
-          - app=kotsadm-api
     - exec:
         collectorName: dnsutils
         command:
