@@ -5,10 +5,10 @@ metadata:
 spec:
   collectors:
     - logs:
-        collectorName: nginx
-        name: default/nginx
+        collectorName: kotsadm-api
+        name: kots/admin_console
         selector:
-          - app: nginx
+          - app=kotsadm-api
     - exec:
         collectorName: dnsutils
         command:
