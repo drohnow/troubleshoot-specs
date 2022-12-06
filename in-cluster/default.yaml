@@ -7,6 +7,17 @@ spec:
     - clusterInfo: {}
     - clusterResources: {}
     - exec:
+          args:
+            - ["-c", "3", "www.yahoo.com"]
+          collectorName: dnsutils
+          command:
+            - ping
+          containerName: dnsutils
+          name: default/dnsutils
+          selector:
+            - app=dnsutils
+          timeout: 10s
+    - exec:
         args:
           - "-U"
           - kotsadm
