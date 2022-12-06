@@ -13,3 +13,8 @@ spec:
         selector:
           - app=dnsutils
         timeout: 10s
+    - logs:
+        collectorName: dnsutils
+        name: default/dnsutils
+        selector:
+          - app=nginx
