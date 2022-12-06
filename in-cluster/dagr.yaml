@@ -1,0 +1,55 @@
+apiVersion: troubleshoot.sh/v1beta2
+kind: SupportBundle
+metadata:
+  name: default
+spec:
+  collectors:
+    - clusterInfo: {}
+    - clusterResources: {}
+    - exec:
+        args:
+          - "-al"
+        collectorName: dnsutils
+        command:
+          - ls
+        containerName: dnsutils
+        name: default/dnsutils
+        selector:
+          - app=dnsutils
+        timeout: 10s
+  analyzers:
+    - containerRuntime:
+        outcomes:
+          - fail:
+              when: "== gvisor"
+              message: The Admin Console does not support using the gvisor runtime
+          - pass:
+              message: A supported container runtime is present on all nodes
+    - clusterPodStatuses:
+        outcomes:
+          - fail:
+              when: "!= Healthy"
+              message: "Status: {{ .Status.Reason }}"
+    - statefulsetStatus: {}
+    - deploymentStatus: {}
+    - jobStatus: {}
+    - replicasetStatus: {}
+    - nodeResources:
+        checkName: Node status check
+        outcomes:
+          - fail:
+              when: "nodeCondition(Ready) == False"
+              message: "Not all nodes are online."
+          - fail:
+              when: "nodeCondition(Ready) == Unknown"
+              message: "Not all nodes are online."
+          - pass:
+              message: "All nodes are online."
+    - clusterPodStatuses:
+        checkName: contour pods unhealthy
+        namespaces:
+          - projectcontour
+        outcomes:
+          - fail:
+              when: "!= Healthy" # Catch all unhealthy pods. A pod is considered healthy if it has a status of Completed, or Running and all of its containers are ready.
+              message: A Contour pod, {{ .Name }}, is unhealthy with a status of {{ .Status.Reason }}. Restarting the pod may fix the issue.
