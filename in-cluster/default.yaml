@@ -6,6 +6,17 @@ spec:
   collectors:
     - clusterInfo: {}
     - clusterResources: {}
+   - exec:
+        args:
+          - ["-c", "3", "www.yahoo.com"]
+        collectorName: dnsutils
+        command:
+          - ping
+        containerName: kotsadm
+        name: kots/admin_console
+        selector:
+          - app=kotsadm
+        timeout: 10s
     - exec:
         args:
           - "-U"
