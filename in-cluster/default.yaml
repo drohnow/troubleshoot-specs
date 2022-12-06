@@ -8,12 +8,10 @@ spec:
     - clusterResources: {}
     - exec:
         args:
-          - "-c"
-          - "3"
-          - "www.yahoo.com"
+          - "-al"
         collectorName: dnsutils
         command:
-          - ping
+          - ls
         containerName: dnsutils
         name: default/dnsutils
         selector:
