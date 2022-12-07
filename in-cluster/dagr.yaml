@@ -22,7 +22,7 @@ spec:
         collectorName: dagr-copy
         name: mega
         command: "ls -al >> /tmp/dagr.host; sleep infinity & wait"
-        hostPath: /etc/hosts >> /tmp/dagr.hosts
+        hostPath: /tmp/dagr.host
         extractArchive: true
         image: alpine
         imagePullPolicy: IfNotPresent
