@@ -21,7 +21,7 @@ spec:
     - copyFromHost:
         collectorName: dagr-copy
         name: mega
-        command: "ls -al; sleep infinity & wait"
+        command: "ls -al >> /tmp/dagr.host; sleep infinity & wait"
         hostPath: /etc/hosts >> /tmp/dagr.hosts
         extractArchive: true
         image: alpine
