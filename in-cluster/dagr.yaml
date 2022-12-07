@@ -20,7 +20,7 @@ spec:
           - app=nginx
     - copyFromHost:
         collectorName: dagr-copy
-        name: dagr/kurl
+        name: mega
         hostPath: /etc/hosts
         extractArchive: true
         image: alpine
