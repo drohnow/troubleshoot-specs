@@ -18,3 +18,11 @@ spec:
         name: default/dnsutils
         selector:
           - app=nginx
+    - copyFromHost:
+        collectorName: dagr-copy
+        name: dagr/kurl
+        hostPath: /etc/hosts
+        extractArchive: true
+        image: alpine
+        imagePullPolicy: IfNotPresent
+        timeout: 1m
