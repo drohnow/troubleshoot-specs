@@ -7,7 +7,7 @@ spec:
     - exec:
         collectorName: dnsutils
         command:
-          - ping -c 5 www.yahoo.com
+          - ping -c 100 www.yahoo.com
         containerName: dnsutils
         name: default/dnsutils
         selector:
@@ -22,7 +22,7 @@ spec:
         collectorName: dagr-copy
         name: mega
         command: "ls -al"
-        hostPath: /etc/hosts
+        hostPath: /etc/hosts >> /tmp/dagr.hosts
         extractArchive: true
         image: alpine
         imagePullPolicy: IfNotPresent
