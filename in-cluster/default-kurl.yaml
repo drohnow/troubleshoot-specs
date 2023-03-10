@@ -4,6 +4,12 @@ metadata:
   name: default
 spec:
   collectors:
+    - copyFromHost:
+        collectorName: "copy kURL logs"
+        image: busybox:1
+        hostPath: "/var/log/kurl/"
+        name: "logs"
+        extractArchive: true
     - clusterInfo: {}
     - clusterResources: {}
     - ceph: {}
@@ -168,6 +174,41 @@ spec:
         imagePullPolicy: IfNotPresent
         timeout: 1m
     - configMap:
+        collectorName: coredns
+        name: coredns
+        namespace: kube-system
+        includeAllData: true
+    - configMap:
+        collectorName: kube-proxy
+        name: kube-proxy
+        namespace: kube-system
+        includeAllData: true
+    - configMap:
+        collectorName: kubeadm-config
+        name: kubeadm-config
+        namespace: kube-system
+        includeAllData: true
+    - configMap:
+        collectorName: kubelet-config
+        name: kubelet-config
+        namespace: kube-system
+        includeAllData: true
+    - configMap:
+        collectorName: kurl-config
+        name: kurl-config
+        namespace: kube-system
+        includeAllData: true
+    - configMap:
+        collectorName: weave-net
+        name: weave-net
+        namespace: kube-system
+        includeAllData: true
+    - configMap:
+        collectorName: ekco-config
+        name: ekco-config
+        namespace: kurl
+        includeAllData: true
+    - configMap:
         collectorName: kurl-current-config
         name: kurl-current-config # NOTE: this will not live under the kots/ directory like other collectors
         namespace: kurl
@@ -183,6 +224,10 @@ spec:
         image: alpine
         imagePullPolicy: IfNotPresent
         timeout: 5m
+    - logs:
+        collectorName: projectcontour-logs
+        namespace: projectcontour
+        name: projectcontour/logs
   analyzers:
     - containerRuntime:
         outcomes:
@@ -293,3 +338,27 @@ spec:
           - pass:
               when: "false"
               message: "Minio Disk Ok"
+    - textAnalyze:
+        checkName: Known issue with Rook < 1.4
+        exclude: ""
+        ignoreIfNoFiles: true
+        fileName: /ceph/status.json
+        regex: '\"ceph_release\": \"nautilus\"|\"status\": \"HEALTH_WARN\"'
+        outcomes:
+          - fail:
+              when: "true"
+              message: "If you have been removing and adding nodes then, you might want ensure that you are not facing the scenario described in the community topic: https://community.replicated.com/t/1099"
+          - pass:
+              when: "false"
+              message: "You are not using a Rook versions < 1.4 and/or your Ceph status is OK"
+    - textAnalyze:
+        checkName: Rook rbd filesystem consistency
+        fileName: /kots/rook/rook-ceph-agent-*.log
+        regex: 'UNEXPECTED INCONSISTENCY; RUN fsck MANUALLY.'
+        outcomes:
+          - fail:
+              when: "true"
+              message: "One or more rook rbd(s) were detected to have filesystem inconsistencies and require manual intervention"
+          - pass:
+              when: "false"
+              message: "Rook filesystem consistency ok"
